@@ -12,25 +12,30 @@ export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const createUser = (email, password) => {
+    setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
   const signInUser = (email, password) => {
+    setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
   const logout = () => {
+    setLoading(true);
     signOut(auth);
   };
-  const authInfo = { user, createUser, signInUser, logout };
+  const authInfo = { user, createUser, signInUser, logout, loading };
 
   //get the current user
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      console.log("it is from useefffect", user);
+      setLoading(true);
+      // console.log("it is from useefffect", user);
     });
     return () => {
       unSubscribe();
