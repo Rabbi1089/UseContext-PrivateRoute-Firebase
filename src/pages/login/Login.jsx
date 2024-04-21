@@ -1,10 +1,12 @@
-import React, { createContext, useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { createContext, useContext, useEffect } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import AuthProvider, { AuthContext } from "../../provider/AuthProvider";
 import { auth } from "../../firebase/firebase.config";
 
 const Login = () => {
-  const { signInUser } = useContext(AuthContext);
+  const { signInUser, googleSigIn } = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   const handleLoginForm = (e) => {
     e.preventDefault();
@@ -14,10 +16,23 @@ const Login = () => {
     signInUser(email, password)
       .then((result) => {
         console.log(result.user);
+        e.target.reset();
+        navigate("/");
       })
       .catch((error) => console.log(error, error.message));
     //console.log(email, password);
   };
+
+  const handleGoogleSignIn = () => {
+    googleSigIn()
+      .then((result) => {
+        console.log(result.user);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div className=" w-2/3 h-3/5 mx-auto rounded-sm">
       <div className="hero max-h-full bg-base-200">
@@ -65,6 +80,9 @@ const Login = () => {
               <p>
                 New here ? <Link to="/signUp">Sign-Up</Link>
               </p>
+              <button onClick={handleGoogleSignIn} className="btn btn-ghost">
+                Sign in with google
+              </button>
             </form>
           </div>
         </div>
